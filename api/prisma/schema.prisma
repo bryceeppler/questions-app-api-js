@@ -1,0 +1,96 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["orderByNulls"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     Int             @id @default(autoincrement())
+  createdAt              DateTime        @default(now())
+  email                  String          @unique
+  username               String          @unique
+  password               String
+  phone                  String?         @unique @default("")
+  name                   String?
+  role                   Role            @default(USER)
+  // each user has a list of Relationship where they are user1 or user2
+  relationships1         Relationship[]  @relation("user1")
+  relationships2         Relationship[]  @relation("user2")
+  // each user has a list of Friends where they are user1 or user2
+  friends1               Friend[]       @relation("friend1")
+  friends2               Friend[]       @relation("friend2")
+
+  answers                Answer[]
+
+}
+
+model Relationship {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  // each relationship connects to two users
+  user1     User     @relation(name: "user1", fields: [user1Id], references: [id])
+  user1Id   Int
+  user2     User     @relation(name: "user2", fields: [user2Id], references: [id])
+  user2Id   Int
+  answers   Answer[]
+}
+
+model Question {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  text      String
+  askedAt   DateTime?
+  answers   Answer[]
+  questionSets     QuestionSet[]
+}
+
+model Answer {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  text           String
+  question       Question     @relation(fields: [questionId], references: [id])
+  questionId     Int
+  relationship   Relationship @relation(fields: [relationshipId], references: [id])
+  relationshipId Int
+  user           User         @relation(fields: [userId], references: [id])
+  userId         Int
+
+  // each answer has a list of responses
+}
+
+model SentMessage {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  messageSid String
+  message    String
+  phone      String
+}
+
+model Friend {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user1     User     @relation(name: "friend1", fields: [user1Id], references: [id])
+  user1Id   Int
+  user2     User     @relation(name: "friend2", fields: [user2Id], references: [id])
+  user2Id   Int
+  status    String   @default("PENDING")
+
+
+}
+
+model QuestionSet {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name      String
+  questions Question[]
+}
+
+
+enum Role {
+  USER
+  ADMIN
+}
