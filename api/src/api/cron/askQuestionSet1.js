@@ -54,14 +54,15 @@ module.exports = function async () {
       .then((users) => {
         // For each user, send a text message with the question, and add this to the SentMessages table
         users.forEach((user) => {
+          const message = "Hey " + user.name + "! Here is your question: " + question[0].text;
           // Send message
           client.messages
             .create({
-              body: question[0].text,
+              body: message,
               from: twilioPhoneNumber,
               to: `+1${user.phone}`,
             })
-            .then((message) => {
+            .then((message) => { 
                 // add the message to the SentMessages table
                 prisma.SentMessage.create({
                     data: {
