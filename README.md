@@ -10,7 +10,7 @@
 
 - twilio for sms messaging
  - command for twilio localhost 
- `twilio phone-numbers:update "+15618234403" --sms-url="http://localhost:8000/api/v1/twilio/sms"`
+ `twilio phone-numbers:update "+15618234403" --sms-url="https://questions-app-api-production.up.railway.app/api/v1/twilio/sms"`
 
 TODO 
 [x]  cron askQuestion function does not add an entry to the SentMessage table 

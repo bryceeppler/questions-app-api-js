@@ -8,7 +8,7 @@ const api = require('./api');
 const app = express();
 
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(morgan("combined"));
 app.use(cors());
 
 
