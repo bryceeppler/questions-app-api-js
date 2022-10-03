@@ -19,6 +19,10 @@ const loginUser = (req, res) => {
             },
         })
         .then((user) => {
+            // if the user wasn't found, return
+            if (!user) {
+                return res.status(400).json({ error: "User not found" });
+            }
             // unhash password
             const valid = bcrypt.compareSync(password, user.password);
             if (valid) {
