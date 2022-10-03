@@ -13,19 +13,16 @@ const askQuestionSet1 = require('./cron/askQuestionSet1');
 
 const router = express.Router();
 
-// question dispatching schedule to run every 20 seconds
-// nodeCron.schedule(expression, function, options);
-
-// nodeCron.schedule('*/10 * * * * *', askQuestion);
-// question dispatching schedule to run every day at 530pm
-nodeCron.schedule('25 17 * * *', askQuestionSet1, {
+// CRON SCHEDULE
+// Question set 1
+// Mon-Thurs at 9am
+nodeCron.schedule('0 9 * * 1-4', askQuestionSet1, {
   scheduled: true,
   timezone: 'America/Los_Angeles',
 });
 
-const testCron = require('./testCron');
-
-router.get('/testCron', testCron);
+// const testCron = require('./testCron');
+// router.get('/testCron', testCron);
 
 router.get('/', (req, res) => {
   res.json({

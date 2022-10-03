@@ -13,5 +13,15 @@
  `twilio phone-numbers:update "+15618234403" --sms-url="http://localhost:8000/api/v1/twilio/sms"`
 
 TODO 
-[] for some reason on the askQuestion corn funtion, i can't get it to ass to the sentMessages table
-[] once I can get that working, we can set a schedule and populate the quesitons
+[x]  cron askQuestion function does not add an entry to the SentMessage table 
+    [x] add test function for testing/refactoring
+    [x]  fix message deployment/SentMessage tracking
+    [x]  integrate with the cron function
+
+
+[x]  setup cron askQuestion to pick from a specific question set
+[x]  allow for a second questionSet and second cron schedule
+[]  deploy cron server as it's own instance?
+[]  UI fixes
+[]  deploy
+
