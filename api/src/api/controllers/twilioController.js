@@ -117,7 +117,7 @@ const sendMessage = (req, res) => {
     .create({
       body: "Hello from Node",
       from: twilioPhoneNumber,
-      to: "+16175551212",
+      to: "+17783482447",
     })
     .then((message) => console.log(message.sid));
 }

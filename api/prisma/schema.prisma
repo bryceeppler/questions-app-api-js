@@ -36,6 +36,8 @@ model Relationship {
   user1Id   Int
   user2     User     @relation(name: "user2", fields: [user2Id], references: [id])
   user2Id   Int
+  questionSet QuestionSet @relation(fields: [questionSetId], references: [id])
+  questionSetId Int @default(1)
   answers   Answer[]
 }
 
@@ -45,7 +47,9 @@ model Question {
   text      String
   askedAt   DateTime?
   answers   Answer[]
-  questionSets     QuestionSet[]
+  // each question belons to a QuestionSet
+  questionSet QuestionSet @relation(fields: [questionSetId], references: [id]) 
+  questionSetId Int @default(1)
 }
 
 model Answer {
@@ -86,6 +90,7 @@ model QuestionSet {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   name      String
+  relationships Relationship[]
   questions Question[]
 }
 

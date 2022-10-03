@@ -28,10 +28,60 @@ const getPendingFriends = (req, res) => {
 };
 
 const createFriend = (req, res) => {
+    // copy the request body but remove questionId if it exists
+    const { questionSetId, ...friendData } = req.body;
+    
   prisma.Friend
     .create({
       data: {
-        ...req.body,
+        ...friendData,
+      },
+    })
+    .then((friend) => {
+        // if there was a questionSetId, create a new relationship between the two
+        // users
+        if (questionSetId) {
+            console.log("creating new relationship");
+                console.log("questionSetId", questionSetId);
+            console.log("friendData", friendData);
+            prisma.Relationship.create({
+                data: {
+                    user1Id: friendData.user1Id,
+                    user2Id: friendData.user2Id,
+                    questionSetId: questionSetId,
+                }
+            }).then((relationship) => {
+                res.json(friend);
+            })
+        } else {
+            res.json(friend);
+
+        }
+    });
+};
+
+const deleteFriendRequest = (req, res) => {
+  const { id } = req.params;
+  prisma.Friend
+    .delete({
+      where: {
+        id: Number(id),
+      },
+    })
+    .then((friend) => {
+      res.json(friend);
+    });
+};
+
+const acceptFriendRequest = (req, res) => {
+  const { id } = req.params;
+  prisma.Friend
+    .update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        status: "ACCEPTED",
       },
     })
     .then((friend) => {
@@ -40,7 +90,9 @@ const createFriend = (req, res) => {
 };
 
 module.exports = {
+    acceptFriendRequest,
     getPendingFriends,
-    createFriend
+    createFriend,
+    deleteFriendRequest,
 
 };

@@ -60,6 +60,8 @@ const getUserRelationships = (req, res) => {
     include: {
       relationships1: true,
       relationships2: true,
+      friends1: true,
+      friends2: true,
     },
   }).then((user) => {
     // return all relationships
@@ -95,7 +97,26 @@ const getUserRelationships = (req, res) => {
           }
         });
       });
-      res.json(combinedRelationships);
+      // we need to filter out Relationships with users who we do not have a Friend relationship with
+      // the status of the Friend relationship must be 'accepted'
+      let friends = user.friends1.concat(user.friends2);
+      let filteredRelationships = combinedRelationships.filter((relationship) => {
+        let found = false;
+        friends.forEach((friend) => {
+          if (
+            (friend.user1Id === relationship.user1Id ||
+              friend.user1Id === relationship.user2Id) &&
+            (friend.user2Id === relationship.user1Id ||
+              friend.user2Id === relationship.user2Id) &&
+            friend.status === "ACCEPTED"
+          ) {
+            found = true;
+          }
+        });
+        return found;
+      });
+      res.json(filteredRelationships);
+      // res.json(combinedRelationships);
     });
 
   });

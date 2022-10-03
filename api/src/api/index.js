@@ -9,7 +9,7 @@ const twilio = require('./routes/twilio');
 const questionSets = require('./routes/questionSets');
 const friends = require('./routes/friends');
 
-const askQuestion = require('./cron/askQuestion');
+const askQuestionSet1 = require('./cron/askQuestionSet1');
 
 const router = express.Router();
 
@@ -18,13 +18,14 @@ const router = express.Router();
 
 // nodeCron.schedule('*/10 * * * * *', askQuestion);
 // question dispatching schedule to run every day at 530pm
-nodeCron.schedule('25 17 * * *', askQuestion, {
+nodeCron.schedule('25 17 * * *', askQuestionSet1, {
   scheduled: true,
   timezone: 'America/Los_Angeles',
 });
 
+const testCron = require('./testCron');
 
-
+router.get('/testCron', testCron);
 
 router.get('/', (req, res) => {
   res.json({
