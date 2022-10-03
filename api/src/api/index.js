@@ -15,8 +15,8 @@ const router = express.Router();
 
 // CRON SCHEDULE
 // Question set 1
-// Mon-Thurs at 9am
-nodeCron.schedule('0 9 * * 1-4', askQuestionSet1, {
+// Mon-Thurs at 3pm
+nodeCron.schedule('0 15 * * 1-4', askQuestionSet1, {
   scheduled: true,
   timezone: 'America/Los_Angeles',
 });
