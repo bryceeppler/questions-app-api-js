@@ -89,7 +89,44 @@ const acceptFriendRequest = (req, res) => {
     });
 };
 
+const getAcceptedFriends = (req, res) => {
+  const { id } = req.params;
+  // get a list of users that is friends with the user with id
+  prisma.Friend
+    .findMany({
+      where: {
+        OR: [
+          {
+            user1Id: Number(id),
+          },
+          {
+            user2Id: Number(id),
+          },
+        ],
+        status : "ACCEPTED"
+      },
+      // include user1 and user2
+      include: {
+        user1: true,
+        user2: true,
+      },
+    })
+    .then((friends) => {
+      // join the two users into one array
+      const condensedFriends = friends.map((friend) => {
+        if (friend.user1Id === Number(id)) {
+          return friend.user2;
+        } else {
+          return friend.user1;
+        }
+      });
+      res.json(condensedFriends);
+    });
+};
+
+
 module.exports = {
+  getAcceptedFriends,
     acceptFriendRequest,
     getPendingFriends,
     createFriend,
