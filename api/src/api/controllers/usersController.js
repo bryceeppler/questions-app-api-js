@@ -131,6 +131,42 @@ const searchByUsernameOld = (req, res) => {
         });
 };
 
+const updateUser = (req, res) => {
+    const { id } = req.params;
+    const { username, email, phone, password } = req.body;
+
+    // validation
+    if (!validator.isEmail(email)) {
+        return res.status(400).json({ error: "Invalid email" });
+    }
+    if (!validator.isMobilePhone(phone)) {
+        return res.status(400).json({ error: "Invalid phone number" });
+    }
+    if (!validator.isStrongPassword(password)) {
+        return res.status(400).json({ error: "Create a stronger password." });
+    }
+
+    // hash password
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+
+    prisma.User
+        .update({
+            where: {
+                id: Number(id),
+            },
+            data: {
+                username,
+                email,
+                phone,
+                password: hash,
+            },
+        })
+        .then((user) => {
+            res.json(user);
+        });
+};
+
 const searchByUsername = (req, res) => {
     const { username } = req.body;
     prisma.User
@@ -156,6 +192,7 @@ const searchByUsername = (req, res) => {
 };
 
 module.exports = {
+    updateUser,
     searchByUsername,
     loginUser,
     registerUser,
